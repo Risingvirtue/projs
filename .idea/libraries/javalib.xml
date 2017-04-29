@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="javalib">
+    <CLASSES>
+      <root url="file://$USER_HOME$/berk/sp17/cs61b/amt/javalib" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$USER_HOME$/berk/sp17/cs61b/amt/javalib" />
+    </SOURCES>
+    <jarDirectory url="file://$USER_HOME$/berk/sp17/cs61b/amt/javalib" recursive="false" />
+    <jarDirectory url="file://$USER_HOME$/berk/sp17/cs61b/amt/javalib" recursive="false" type="SOURCES" />
+  </library>
+</component>
