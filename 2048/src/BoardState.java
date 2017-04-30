@@ -1,5 +1,7 @@
+import java.awt.event.KeyEvent;
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.Scanner;
 
 /**
  * Created by JohnnyOn on 4/29/17.
@@ -8,16 +10,10 @@ public class BoardState {
     int[][] curr;
     int[] currArray;
     int emptySpaces;
+    boolean newGame;
     BoardState() {
-        emptySpaces = 16;
-        this.curr = new int[4][4];
-        this.currArray = new int[16];
-        Random rand = new Random();
-        int n = rand.nextInt(16);
-        int[] location = convertToXY(n);
-        this.curr[location[0]][location[1]] = 2;
-        currArray[n] = 2;
-        emptySpaces--;
+        newBoard();
+
     }
 
     public int[] convertToXY(int coord) {
@@ -26,7 +22,27 @@ public class BoardState {
         return new int[]{y,x};
     }
 
+    public void newBoard() {
+        emptySpaces = 16;
+        this.curr = new int[4][4];
+        this.currArray = new int[16];
+        Random rand = new Random();
+        int n = rand.nextInt(16);
+        int[] location = convertToXY(n);
+        int twoOrFour = 2*(rand.nextInt(2) + 1);
+        this.curr[location[0]][location[1]] = twoOrFour;
+
+
+        currArray[n] = twoOrFour;
+        emptySpaces--;
+        newGame = true;
+    }
+
     public void insert() {
+        if (emptySpaces == 0) {
+            return;
+        }
+        newGame = false;
         Random rand = new Random();
         int n = rand.nextInt(emptySpaces);
         int numEmpty = 0;
@@ -40,10 +56,37 @@ public class BoardState {
                     }
                 }
             }
-            currArray[insertNum] = 2;
-            int[] coord = convertToXY(insertNum);
-            curr[coord[0]][coord[1]] = 2;
-            emptySpaces--;
+        int twoOrFour = (rand.nextInt(2) + 1)*2;
+        currArray[insertNum] = twoOrFour;
+        int[] coord = convertToXY(insertNum);
+        curr[coord[0]][coord[1]] = twoOrFour;
+        emptySpaces--;
+        if (emptySpaces == 0) {
+            //leftright
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (curr[i][j] == curr[i][j+ 1] ){
+                            return;
+                    }
+                }
+            }
+            //updown
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 4; j++) {
+                    if (curr[i][j] == curr[i+1][j] ){
+                        return;
+                    }
+                }
+            }
+            Scanner sc = new Scanner(System.in);
+            System.out.print("GAME OVER. Start Over? Press 1");
+            int i = 0;
+            while (i != 1) {
+                i = sc.nextInt();
+            }
+            newBoard();
+
+        }
     }
 
     public void right() {
@@ -225,33 +268,59 @@ public class BoardState {
 
         }
     }
+
+    public void play(String input) {
+        if (input.equals("w")) {
+            up();
+            printBoard();
+        } else if (input.equals("s")) {
+            down();
+            printBoard();
+        } else if (input.equals("a")) {
+            left();
+            printBoard();
+        } else if (input.equals("d")) {
+            right();
+            printBoard();
+        }
+    }
     public static void main(String[] args) {
         BoardState x = new BoardState();
         x.printBoard();
-        int[] row = new int[4];
-        row[0] = 4;
-        row[3] = 4;
-        int[] newRow = x.condenseRight(row);
-        int[][] state = new int[4][4];
-        state[0][1] = 4;
-        state[0][2] = 2;
-        state[2][1] = 2;
-        state[3][0] = 4;
-        state[3][1] = 4;
-        state[3][2] = 2;
-        state[3][3] = 2;
-        int[] stateArray = new int[16];
-        stateArray[1] = 4;
-        stateArray[2] = 2;
-        stateArray[9] = 2;
-        stateArray[12] = 4;
-        stateArray[13] = 4;
-        stateArray[14] = 2;
-        stateArray[15] = 2;
-        x.curr = state;
-        x.currArray = stateArray;
-        x.emptySpaces = 9;
-        x.down();
-        x.printBoard();
+//        int[] row = new int[4];
+//        row[0] = 4;
+//        row[3] = 4;
+//        int[] newRow = x.condenseRight(row);
+//        int[][] state = new int[4][4];
+//        state[0][1] = 4;
+//        state[0][2] = 2;
+//        state[2][1] = 2;
+//        state[3][0] = 4;
+//        state[3][1] = 4;
+//        state[3][2] = 2;
+//        state[3][3] = 2;
+//        int[] stateArray = new int[16];
+//        stateArray[1] = 4;
+//        stateArray[2] = 2;
+//        stateArray[9] = 2;
+//        stateArray[12] = 4;
+//        stateArray[13] = 4;
+//        stateArray[14] = 2;
+//        stateArray[15] = 2;
+//        x.curr = state;
+//        x.currArray = stateArray;
+//        x.emptySpaces = 9;
+//        x.down();
+//        x.printBoard();
+        Scanner board = new Scanner(System.in);
+        x.newGame = false;
+        while (!x.newGame) {
+            String line = board.next();
+            for (int i = 0; i < line.length(); i++) {
+                String input = line.substring(i,i+1);
+                x.play(input);
+
+            }
+        }
     }
 }
